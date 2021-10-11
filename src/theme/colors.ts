@@ -3,4 +3,6 @@ export const colorScheme = {
   secondary: "#ee3",
   background: "#fff",
   fontPrimary: "#444",
+  success: "#31d36d",
+  error: "#d54e4e",
 };
