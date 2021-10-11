@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import LaunchInfo from "../components/LaunchInfo/LaunchInfo";
+import { fetchRocketLaunches } from "../services/rocketAPI";
 import { LaunchesResponseI, LaunchInfoI } from "../types/launch.type";
-import { response1 } from "./exampleData";
 import { ScreenNamesEnum } from "./screens";
 
 const HomeScreen = ({ navigation }: { navigation: any }) => {
@@ -12,22 +12,14 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   const baseUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json";
 
   const fetchLaunches = async (url: string) => {
-    if (!url) return;
-    try {
-      // const response = await axios.get(url);
-      const response = { data: response1 };
-      if (!response?.data) {
-        throw new Error("Can not get data from response");
-      }
-      const { count, next, previous, results } = response?.data as LaunchesResponseI;
+    const [data, error] = await fetchRocketLaunches(url);
+    if (data) {
+      const { count, next, previous, results } = data;
       setResponse({ count, next, previous });
-      console.log({ count, next, previous });
 
       if (results?.length) {
         setList([...list, ...results]);
       }
-    } catch (error) {
-      console.info(error);
     }
   };
 
