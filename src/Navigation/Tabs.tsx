@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import { ScreenNamesEnum } from "../screens/screens";
@@ -9,7 +9,7 @@ import { colorScheme } from "../theme/colors";
 const Tab = createBottomTabNavigator();
 
 const menuIcons: any = {
-  [ScreenNamesEnum.HOME]: "list",
+  [ScreenNamesEnum.LIST]: "list",
   [ScreenNamesEnum.FAVORITES]: "star",
 };
 
@@ -26,7 +26,7 @@ const Tabs = () => {
         tabBarInactiveTintColor: colorScheme.fontPrimary,
       })}
     >
-      <Tab.Screen name={ScreenNamesEnum.HOME} component={HomeScreen} />
+      <Tab.Screen name={ScreenNamesEnum.LIST} component={HomeScreen} />
       <Tab.Screen name={ScreenNamesEnum.FAVORITES} component={FavoriteScreen} />
     </Tab.Navigator>
   );
