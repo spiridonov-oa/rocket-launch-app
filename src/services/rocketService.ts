@@ -1,5 +1,5 @@
 import { response1 } from "../screens/exampleData";
-import { LaunchesResponseI } from "../types/launch.type";
+import { LaunchesResponseI } from "../types/launch.types";
 
 export const fetchRocketLaunches = async (url: string): Promise<[LaunchesResponseI | null, Error | null]> => {
   try {

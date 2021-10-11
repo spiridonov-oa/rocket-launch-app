@@ -1,17 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageProps } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { colorScheme } from "../../theme/colors";
-import { LaunchInfoI } from "../../types/launch.type";
-
-enum Status {
-  Failure = "Failed",
-  Success = "Succeeded",
-}
-
-const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString("en-US");
-};
+import { LaunchInfoPropsI, Status } from "./LaunchInfo.types";
 
 const Thumbnail = () => (
   <View style={[styles.image, { opacity: 0.2, backgroundColor: "#aaa" }]}>
@@ -19,57 +10,51 @@ const Thumbnail = () => (
   </View>
 );
 
-const LaunchInfo = ({ data, onPress }: { data: LaunchInfoI; onPress: (e: string) => void }) => {
-  const info = {
-    id: data?.id,
-    name: data?.name,
-    image: data?.image,
-    status: data?.status?.abbrev, // Failure | Success
-    wiki_url: data?.pad?.info_url || data?.pad?.wiki_url,
-    startDate: formatDate(data?.window_start),
-  };
-
-  const onPressHandler = () => {
-    if (info.wiki_url) {
-      onPress(info.wiki_url);
+const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchInfoPropsI) => {
+  const handlePressInfo = () => {
+    if (data.wiki_url) {
+      onPressInfo(data.wiki_url);
     }
+  };
+  const handleAddToFavorites = () => {
+    onPressFavorites(data);
   };
 
   return (
     <View style={styles.container}>
-      {info.image ? (
-        <Image style={styles.image} source={info.image ? { uri: info.image } : require("./rocket.png")} />
+      {data.image ? (
+        <Image style={styles.image} source={data.image ? { uri: data.image } : require("./rocket.png")} />
       ) : (
         <Thumbnail />
       )}
 
       <View style={styles.column}>
         <View style={styles.bottomRow}>
-          {info.wiki_url ? (
-            <TouchableOpacity onPress={onPressHandler}>
+          {data.wiki_url ? (
+            <TouchableOpacity onPress={handlePressInfo}>
               <Text style={styles.title}>
-                {info.name} <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
+                {data.name} <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
               </Text>
             </TouchableOpacity>
           ) : (
-            <Text style={styles.title}>{info.name}</Text>
+            <Text style={styles.title}>{data.name}</Text>
           )}
-          <TouchableOpacity>
-            <Ionicons name={"heart-outline"} size={20} color={colorScheme.primary} />
+          <TouchableOpacity onPress={handleAddToFavorites}>
+            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={colorScheme.primary} />
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          <Text style={[styles.status, { color: info.status === "Success" ? colorScheme.success : colorScheme.error }]}>
-            {Status[info.status]}
+          <Text style={[styles.status, { color: data.status === "Success" ? colorScheme.success : colorScheme.error }]}>
+            {Status[data.status]}
           </Text>
-          <Text style={styles.date}>{info.startDate}</Text>
+          <Text style={styles.date}>{data.startDate}</Text>
         </View>
       </View>
     </View>
   );
 };
 
-export default LaunchInfo;
+export default React.memo(LaunchInfo);
 
 const styles = StyleSheet.create({
   container: {

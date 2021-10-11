@@ -1,44 +1,44 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FlatList, View } from "react-native";
 import LaunchInfo from "../components/LaunchInfo/LaunchInfo";
-import { fetchRocketLaunches } from "../services/rocketAPI";
-import { LaunchesResponseI, LaunchInfoI } from "../types/launch.type";
+import { useFavoriteHook } from "../hooks/useFavoriteHook";
+import { useLaunchHook } from "../hooks/useLaunchHook";
+import { LaunchItemI } from "../types/launch.types";
 import { ScreenNamesEnum } from "./screens";
 
 const HomeScreen = ({ navigation }: { navigation: any }) => {
-  const [list, setList] = useState<LaunchInfoI[]>([]);
-  const [response, setResponse] = useState<Omit<LaunchesResponseI, "results">>();
-  const baseUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json";
+  const { favorites, removeFavorite, saveFavorite }: any = useFavoriteHook();
+  const { results, response, loading, error, fetchLaunches }: any = useLaunchHook();
 
-  const fetchLaunches = async (url: string) => {
-    const [data, error] = await fetchRocketLaunches(url);
-    if (data) {
-      const { count, next, previous, results } = data;
-      setResponse({ count, next, previous });
-
-      if (results?.length) {
-        setList([...list, ...results]);
-      }
-    }
-  };
-
-  const onPressLaunchInfo = (uri: string) => {
+  const handlePressLaunchInfo = (uri: string) => {
     navigation.navigate(ScreenNamesEnum.LAUNCH_INFO, { params: { uri } });
   };
 
-  const renderItem = ({ item }: { item: LaunchInfoI }) => (
-    <LaunchInfo key={item.id} data={item} onPress={onPressLaunchInfo} />
+  const handlePressFavorites = (data: LaunchItemI) => {
+    const isFavorite = favorites.has(data.id);
+    if (isFavorite) {
+      removeFavorite(data.id);
+    } else {
+      saveFavorite(data);
+    }
+  };
+
+  const renderItem = ({ item }: { item: LaunchItemI }) => (
+    <LaunchInfo
+      key={item.id}
+      data={item}
+      isFavorite={favorites.has(item.id)}
+      onPressInfo={handlePressLaunchInfo}
+      onPressFavorites={handlePressFavorites}
+    />
   );
 
-  useEffect(() => {
-    fetchLaunches(baseUrl);
-  }, []);
+  console.log(results);
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={list}
+        data={results}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         onEndReached={() => {

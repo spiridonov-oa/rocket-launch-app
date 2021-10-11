@@ -82,3 +82,12 @@ export interface LaunchInfoI {
   infographic: string | null;
   program: [];
 }
+
+export interface LaunchItemI {
+  id: string;
+  name: string;
+  image: string | null;
+  status: "Failure" | "Success"; // Failure | Success
+  wiki_url: string;
+  startDate: string;
+}
