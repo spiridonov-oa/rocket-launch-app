@@ -1,3 +1,5 @@
+import { ImageSourcePropType, ImageURISource } from "react-native";
+
 export interface LaunchesResponseI {
   count: number;
   next: string | null;

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, ImageProps } from "react-native";
 import { LaunchInfoI } from "../../types/launch.type";
 
 const LaunchInfo = ({ data, onPress }: { data: LaunchInfoI; onPress: (e: string) => void }) => {
@@ -21,6 +21,7 @@ const LaunchInfo = ({ data, onPress }: { data: LaunchInfoI; onPress: (e: string)
   return (
     <View>
       <TouchableOpacity onPress={onPressHandler}>
+        {info.image && <Image style={styles.image} source={{ uri: info.image }} />}
         <Text>{info.name}</Text>
         {/* <Text>{info.image}</Text>
         <Text>{info.status}</Text> */}
@@ -35,4 +36,8 @@ export default LaunchInfo;
 
 const styles = StyleSheet.create({
   container: {},
+  image: {
+    width: 50,
+    height: 50,
+  },
 });
