@@ -30,16 +30,19 @@ function useProvideFavorite() {
 
   const saveFavorite = (item: LaunchInfoI) => {
     favorites.set(item.id, item);
-    const newMap = new Map(favorites);
-    setFavorites(newMap);
-    storeData(name, Array.from(newMap));
+    saveToStorage(favorites);
   };
 
   const removeFavorite = (id: string) => {
     favorites.delete(id);
+    saveToStorage(favorites);
+  };
+
+  const saveToStorage = (favorites: Map<string, LaunchInfoI>) => {
     const newMap = new Map(favorites);
     setFavorites(newMap);
-    storeData(name, Array.from(newMap));
+    const favoritesArray: LaunchInfoI[] = Array.from(newMap.values());
+    storeData(name, favoritesArray);
   };
 
   return {
