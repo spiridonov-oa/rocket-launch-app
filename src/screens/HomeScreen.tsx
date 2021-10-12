@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import LaunchList from "../components/LaunchList/LaunchList";
 import { useLaunchHook } from "../hooks/useLaunchHook";
@@ -18,13 +18,11 @@ const HomeScreen = () => {
     }
   };
 
-  const searchNextPage = debounce(searchLaunches, 500);
+  const searchDebounced = useCallback(debounce(searchLaunches, 500), []);
 
   const updateSearch = (text: string): void => {
     setSearch(text);
-    if (text?.length > 2) {
-      searchNextPage(text);
-    }
+    searchDebounced(text);
   };
 
   return (
@@ -39,6 +37,7 @@ const HomeScreen = () => {
           value={search}
           lightTheme={true}
           round={true}
+          maxLength={100}
         />
       </View>
       {!!error ? (

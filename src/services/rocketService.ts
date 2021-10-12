@@ -8,7 +8,7 @@ export const fetchRocketLaunches = async (url: string): Promise<[LaunchesRespons
       throw new Error("URL should not be empty");
     }
     // const response = await axios.get(url);
-    console.log("fetching.............");
+    console.log("fetching...", url);
     const response = await mockData(url);
 
     if (!response?.data) {

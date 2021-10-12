@@ -42,7 +42,7 @@ function useProvideLaunch() {
       if (results?.length) {
         const serializedData = results.map(serializeData);
         const clearList = avoidDuplicates([...list, ...serializedData]);
-        console.log(clearList.map((i) => i.id));
+        // console.log(clearList.map((i) => i.id));
         setList(clearList);
       }
     } else {
@@ -59,11 +59,17 @@ function useProvideLaunch() {
   };
 
   const searchLaunches = async (query: string, url: string) => {
+    let nextPageUrl;
     if (!url) {
+      if (!query || query.length < 3) return;
+
+      nextPageUrl = searchUrl + query;
       setList([]);
+    } else {
+      nextPageUrl = url;
     }
     setLoading(true);
-    const [data, err] = await fetchRocketLaunches(url || searchUrl + query);
+    const [data, err] = await fetchRocketLaunches(nextPageUrl);
     setLoading(false);
 
     handleResponse([data, err]);
