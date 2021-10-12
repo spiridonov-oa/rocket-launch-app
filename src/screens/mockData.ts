@@ -1,22 +1,18 @@
 import { LaunchesResponseI, LaunchInfoI } from "../types/launch.types";
 
-const generateMockData = (u: string): { data: LaunchesResponseI } => {
-  let url: string = u;
-  if (!url || url?.slice(0, 3) !== "url") {
-    url = "url1";
-  }
-
-  const num: number = +url?.slice(3);
+const generateMockData = (url: string): { data: LaunchesResponseI } => {
+  const params = getQueryParams(url);
+  const num: number = params.offset ? +params.offset / +params.limit : 0;
 
   const randomBool = (): boolean => {
     return !Math.round(Math.random());
   };
 
-  const results: LaunchInfoI[] = new Array(10).fill(0).map((v, i) => ({
+  let results: LaunchInfoI[] = new Array(10).fill(0).map((v, i) => ({
     id: `id-${num}-${i}`,
     url: "https://ll.thespacedevs.com/2.2.0/launch/e3df2ecd-c239-472f-95e4-2b89b4f75800/?format=api",
     slug: `sputnik-${num}-${i}`,
-    name: `Sputnik - KS${num}-VM-${i}` + (randomBool() ? "" : " The launch vehicle successfully"),
+    name: `Sputnik ${params.search || ""} --${num}--${i}` + (randomBool() ? "" : " The launch vehicle successfully"),
     status: {
       id: 3,
       name: "Launch Successful",
@@ -97,12 +93,45 @@ const generateMockData = (u: string): { data: LaunchesResponseI } => {
     program: [],
   }));
 
-  if (num > 100) {
-    return { data: { count: 500, next: null, previous: url, results: [] } };
+  const nextUrl = getNextUrl(url);
+
+  if (num > 100 || params?.search?.length > 7) {
+    return { data: { count: params.search ? 100 : 1000, next: null, previous: url, results: [] } };
   } else {
-    return { data: { count: 500, next: "url" + (num + 1), previous: url, results } };
+    return { data: { count: params.search ? 100 : 1000, next: nextUrl, previous: url, results } };
   }
 };
+
+function getQueryParams(url: string) {
+  const initParams = {
+    limit: "10",
+    offset: "0",
+  };
+  const obj = url
+    .split("?")[1]
+    .split("&")
+    .reduce((result: any, substr) => {
+      const arr = substr.split("=");
+      result[arr[0]] = arr[1];
+      return result;
+    }, initParams);
+  return obj;
+}
+
+function getNextUrl(url: string) {
+  const params = getQueryParams(url);
+  params.offset = +params.offset + +params.limit;
+  return (
+    "https://ll.thespacedevs.com/2.2.0/launch/?" +
+    Object.keys(params)
+      .map((k) => `${k}=${params[k]}`)
+      .join("&")
+  );
+}
+// https://ll.thespacedevs.com/2.2.0/launch/?format=json
+// https://ll.thespacedevs.com/2.2.0/launch/?format=json&limit=10&offset=20
+// https://ll.thespacedevs.com/2.2.0/launch/?format=json&search=Falcooo
+// https://ll.thespacedevs.com/2.2.0/launch/?format=json&limit=10&offset=20&search=Falc
 
 export function mockData(url: string): Promise<{ data: LaunchesResponseI }> {
   return new Promise((resolve, reject) => {
