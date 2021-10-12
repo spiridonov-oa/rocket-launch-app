@@ -89,5 +89,6 @@ export interface LaunchItemI {
   image: string | null;
   status: "Failure" | "Success"; // Failure | Success
   wiki_url: string;
+  country_code: string;
   startDate: string;
 }

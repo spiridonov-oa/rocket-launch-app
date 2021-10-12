@@ -33,10 +33,13 @@ const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchI
           <View style={styles.bottomRow}>
             {data.wiki_url ? (
               <Text style={styles.title}>
-                {data.name} <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
+                {data.name} - {data.country_code}
+                <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
               </Text>
             ) : (
-              <Text style={styles.title}>{data.name}</Text>
+              <Text style={styles.title}>
+                {data.name} - {data.country_code}
+              </Text>
             )}
             <TouchableOpacity onPress={handleAddToFavorites}>
               <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={colorScheme.primary} />

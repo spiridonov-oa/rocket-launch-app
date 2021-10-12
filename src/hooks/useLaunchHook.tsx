@@ -13,6 +13,7 @@ const serializeData = (data: LaunchInfoI): LaunchItemI => ({
   status: data?.status?.abbrev, // Failure | Success
   wiki_url: data?.pad?.info_url || data?.pad?.wiki_url,
   startDate: formatDate(data?.window_start),
+  country_code: data?.pad?.location?.country_code,
 });
 
 const LaunchContext = createContext(undefined);
@@ -45,7 +46,7 @@ function useProvideLaunch() {
 
       if (results?.length) {
         const serializedData = results.map(serializeData);
-        console.log(serializedData);
+        console.log(serializedData.map((i) => i.id));
         setList([...list, ...serializedData]);
       }
     }
