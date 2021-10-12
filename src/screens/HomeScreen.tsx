@@ -4,12 +4,11 @@ import LaunchList from "../components/LaunchList/LaunchList";
 import { useLaunchHook } from "../hooks/useLaunchHook";
 import { colorScheme } from "../theme/colors";
 import { SearchBar } from "react-native-elements";
+import { debounce } from "../helpers/debounce";
 
 const HomeScreen = () => {
   const { results, response, loading, error, fetchLaunches, searchLaunches }: any = useLaunchHook();
   const [search, setSearch] = useState("");
-
-  const threshold = 1;
 
   const loadMoreData = () => {
     if (response?.next && !loading && !error && response.count > results.length && !search) {
@@ -19,11 +18,12 @@ const HomeScreen = () => {
     }
   };
 
-  const updateSearch = (value: string) => {
-    console.log(value);
-    setSearch(value);
-    if (value?.length > 2) {
-      searchLaunches(value);
+  const searchNextPage = debounce(searchLaunches, 500);
+
+  const updateSearch = (text: string): void => {
+    setSearch(text);
+    if (text?.length > 2) {
+      searchNextPage(text);
     }
   };
 
@@ -32,6 +32,7 @@ const HomeScreen = () => {
       <View>
         <SearchBar
           placeholder="Search by name ..."
+          // @ts-ignore
           onChangeText={updateSearch}
           containerStyle={{ backgroundColor: colorScheme.secondaryBackground }}
           inputContainerStyle={{ backgroundColor: colorScheme.background, borderRadius: 50, paddingHorizontal: 10 }}
@@ -46,7 +47,7 @@ const HomeScreen = () => {
           <Text style={{ color: colorScheme.error }}>{error?.message}</Text>
         </View>
       ) : (
-        <LaunchList data={results} onEndReached={loadMoreData} onEndReachedThreshold={threshold} loading={loading} />
+        <LaunchList data={results} onEndReached={loadMoreData} loading={loading} />
       )}
     </View>
   );
