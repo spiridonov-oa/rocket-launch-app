@@ -61,7 +61,12 @@ function useProvideLaunch() {
   const searchLaunches = async (query: string, url: string) => {
     let nextPageUrl;
     if (!url) {
-      if (!query || query.length < 3) return;
+      if (!query) {
+        fetchLaunches(baseUrl);
+        return;
+      } else if (query.length < 3) {
+        return;
+      }
 
       nextPageUrl = searchUrl + query;
       setList([]);
