@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 
 const menuIcons: any = {
   [ScreenNamesEnum.LIST]: "list",
-  [ScreenNamesEnum.FAVORITES]: "heart",
+  [ScreenNamesEnum.FAVORITES]: "bookmarks-outline",
 };
 
 const Tabs = () => {

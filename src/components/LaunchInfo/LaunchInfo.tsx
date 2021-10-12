@@ -42,7 +42,7 @@ const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchI
               </Text>
             )}
             <TouchableOpacity onPress={handleAddToFavorites}>
-              <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={colorScheme.primary} />
+              <Ionicons name={isFavorite ? "bookmarks" : "bookmarks-outline"} size={20} color={colorScheme.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.bottomRow}>
