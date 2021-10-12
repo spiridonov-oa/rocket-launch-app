@@ -16,7 +16,7 @@ const generateMockData = (u: string): { data: LaunchesResponseI } => {
     id: `id-${num}-${i}`,
     url: "https://ll.thespacedevs.com/2.2.0/launch/e3df2ecd-c239-472f-95e4-2b89b4f75800/?format=api",
     slug: `sputnik-${num}-${i}`,
-    name: `Sputnik - KS${num}-VM-${i}`,
+    name: `Sputnik - KS${num}-VM-${i}` + (randomBool() ? "" : " The launch vehicle successfully"),
     status: {
       id: 3,
       name: "Launch Successful",

@@ -40,7 +40,6 @@ const LaunchList = ({
 
   return (
     <FlatList
-      style={{ backgroundColor: colorScheme.secondaryBackground }}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       ListEmptyComponent={() => <EmptyList />}

@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { colorScheme } from "../../theme/colors";
-import { LaunchInfoPropsI, Status } from "./LaunchInfo.types";
+import { LaunchInfoPropsI, StatusLabels } from "./LaunchInfo.types";
 
 const Thumbnail = () => (
   <View style={[styles.image, { opacity: 0.2, backgroundColor: "#aaa" }]}>
@@ -31,16 +31,17 @@ const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchI
 
         <View style={styles.column}>
           <View style={styles.firstRow}>
-            <Text style={styles.title}>
-              {data.name} - {data.country_code}
+            <Text style={styles.title} numberOfLines={2}>
+              {data.name}
             </Text>
           </View>
           <View style={styles.bottomRow}>
             <Text style={styles.date}>{data.startDate}</Text>
+            <Text style={styles.country_code}>{data.country_code}</Text>
             <Text
               style={[styles.status, { color: data.status === "Success" ? colorScheme.success : colorScheme.error }]}
             >
-              {Status[data.status]}
+              {StatusLabels[data.status]}
             </Text>
           </View>
         </View>
@@ -83,10 +84,11 @@ const styles = StyleSheet.create({
     color: colorScheme.fontPrimary,
     fontWeight: "bold",
   },
-  status: { fontSize: 12, marginTop: 4, marginRight: 4 },
-  date: { fontSize: 12, marginTop: 4, marginRight: 10 },
+  date: { fontSize: 12, marginRight: 4, color: colorScheme.fontPrimary },
+  country_code: { fontSize: 12, marginHorizontal: 4, color: colorScheme.fontPrimary },
+  status: { fontSize: 12, marginHorizontal: 4 },
   infoIcon: {
-    width: 50,
+    width: 30,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -103,5 +105,5 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   firstRow: { flexDirection: "row", justifyContent: "space-between" },
-  bottomRow: { flexDirection: "row", justifyContent: "flex-start" },
+  bottomRow: { flexDirection: "row", justifyContent: "flex-start", marginTop: 2 },
 });

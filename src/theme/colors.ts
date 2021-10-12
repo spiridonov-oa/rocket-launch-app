@@ -6,5 +6,5 @@ export const colorScheme = {
   fontPrimary: "#444",
   success: "#31d36d",
   error: "#d54e4e",
-  lightText: "rgba(0,0,0,0.5)",
+  placeholderText: "rgba(0,0,0,0.3)",
 };

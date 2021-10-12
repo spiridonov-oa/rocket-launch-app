@@ -1,6 +1,6 @@
 import { LaunchItemI } from "../../types/launch.types";
 
-export enum Status {
+export enum StatusLabels {
   Failure = "Failed",
   Success = "Succeeded",
 }
