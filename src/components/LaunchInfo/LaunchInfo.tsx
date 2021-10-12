@@ -21,36 +21,38 @@ const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchI
   };
 
   return (
-    <View style={styles.container}>
-      {data.image ? (
-        <Image style={styles.image} source={data.image ? { uri: data.image } : require("./rocket.png")} />
-      ) : (
-        <Thumbnail />
-      )}
+    <TouchableOpacity onPress={handlePressInfo}>
+      <View style={styles.container}>
+        {data.image ? (
+          <Image style={styles.image} source={data.image ? { uri: data.image } : require("./rocket.png")} />
+        ) : (
+          <Thumbnail />
+        )}
 
-      <View style={styles.column}>
-        <View style={styles.bottomRow}>
-          {data.wiki_url ? (
-            <TouchableOpacity onPress={handlePressInfo}>
+        <View style={styles.column}>
+          <View style={styles.bottomRow}>
+            {data.wiki_url ? (
               <Text style={styles.title}>
                 {data.name} <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
               </Text>
+            ) : (
+              <Text style={styles.title}>{data.name}</Text>
+            )}
+            <TouchableOpacity onPress={handleAddToFavorites}>
+              <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={colorScheme.primary} />
             </TouchableOpacity>
-          ) : (
-            <Text style={styles.title}>{data.name}</Text>
-          )}
-          <TouchableOpacity onPress={handleAddToFavorites}>
-            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={20} color={colorScheme.primary} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.bottomRow}>
-          <Text style={[styles.status, { color: data.status === "Success" ? colorScheme.success : colorScheme.error }]}>
-            {Status[data.status]}
-          </Text>
-          <Text style={styles.date}>{data.startDate}</Text>
+          </View>
+          <View style={styles.bottomRow}>
+            <Text
+              style={[styles.status, { color: data.status === "Success" ? colorScheme.success : colorScheme.error }]}
+            >
+              {Status[data.status]}
+            </Text>
+            <Text style={styles.date}>{data.startDate}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

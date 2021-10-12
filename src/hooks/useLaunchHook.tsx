@@ -3,6 +3,7 @@ import { formatDate } from "../helpers/date";
 import { fetchRocketLaunches } from "../services/rocketService";
 import { LaunchesResponseI, LaunchInfoI, LaunchItemI } from "../types/launch.types";
 
+let counter = 1;
 const baseUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json";
 
 const serializeData = (data: LaunchInfoI): LaunchItemI => ({
@@ -33,6 +34,7 @@ function useProvideLaunch() {
   const [error, setError] = useState<Error>();
 
   const fetchLaunches = async (url: string) => {
+    console.log("fetchLaunches counter", counter++, url);
     setLoading(true);
     const [data, err] = await fetchRocketLaunches(url);
     setLoading(false);
@@ -43,6 +45,7 @@ function useProvideLaunch() {
 
       if (results?.length) {
         const serializedData = results.map(serializeData);
+        console.log(serializedData);
         setList([...list, ...serializedData]);
       }
     }
