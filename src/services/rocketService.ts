@@ -15,8 +15,6 @@ export const fetchRocketLaunches = async (url: string): Promise<[LaunchesRespons
       throw new Error("Can not get data from response");
     }
 
-    console.log("response.data.results.length", response.data.results.length);
-
     return [response?.data as LaunchesResponseI, null];
   } catch (error) {
     console.info(error);

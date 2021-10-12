@@ -5,6 +5,7 @@ export const storeData = async (name: string, data: any) => {
     await AsyncStorage.setItem(name, JSON.stringify(data));
   } catch (error) {
     // Error saving data
+    console.error("storeData", error);
   }
 };
 
@@ -13,10 +14,10 @@ export const retrieveData = async (name: string) => {
     const value = await AsyncStorage.getItem(name);
     if (value !== null) {
       // Our data is fetched successfully
-      console.log(value);
+      // console.log(value);
       return JSON.parse(value);
     }
   } catch (error) {
-    // Error retrieving data
+    console.error("retrieveData", error);
   }
 };

@@ -10,7 +10,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   const threshold = 1;
 
   const loadMoreData = () => {
-    if (response?.next && !loading && !error) {
+    if (response?.next && !loading && !error && response.count > results.length) {
       fetchLaunches(response.next);
     }
   };

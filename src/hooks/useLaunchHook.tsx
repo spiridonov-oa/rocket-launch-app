@@ -16,6 +16,14 @@ const serializeData = (data: LaunchInfoI): LaunchItemI => ({
   country_code: data?.pad?.location?.country_code,
 });
 
+const avoidDuplicates = (arr: LaunchItemI[]): LaunchItemI[] => {
+  const dataMap = arr.reduce((result: any, item) => {
+    result.push([item.id, item]);
+    return result;
+  }, []);
+  return Array.from(new Map<string, LaunchItemI>(dataMap).values());
+};
+
 const LaunchContext = createContext(undefined);
 
 // Provider component that wraps your app and makes Launch object ...
@@ -40,18 +48,22 @@ function useProvideLaunch() {
     const [data, err] = await fetchRocketLaunches(url);
     setLoading(false);
 
-    if (data) {
+    if (err) {
+      setError(err);
+    } else if (data) {
       const { count, next, previous, results } = data;
       setResponse({ count, next, previous });
 
       if (results?.length) {
         const serializedData = results.map(serializeData);
-        console.log(serializedData.map((i) => i.id));
-        setList([...list, ...serializedData]);
+
+        const clearList = avoidDuplicates([...list, ...serializedData]);
+
+        console.log(clearList.map((i) => i.id));
+        setList(clearList);
       }
-    }
-    if (err) {
-      setError(err);
+    } else {
+      setError(new Error("Can not get data from response"));
     }
   };
 
