@@ -61,7 +61,7 @@ export interface LaunchInfoI {
     agency_id: string | null;
     name: string;
     info_url: string | null;
-    wiki_url: string;
+    wiki_url: string | null;
     map_url: string;
     latitude: string;
     longitude: string;
@@ -85,10 +85,10 @@ export interface LaunchInfoI {
 
 export interface LaunchItemI {
   id: string;
-  name: string;
+  name: string | null;
   image: string | null;
   status: "Failure" | "Success"; // Failure | Success
-  wiki_url: string;
-  country_code: string;
-  startDate: string;
+  wiki_url: string | null;
+  country_code: string | null;
+  startDate: string | null;
 }

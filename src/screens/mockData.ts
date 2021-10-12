@@ -66,8 +66,12 @@ const generateMockData = (u: string): { data: LaunchesResponseI } => {
       url: "https://ll.thespacedevs.com/2.2.0/pad/32/?format=api",
       agency_id: null,
       name: "1/5",
-      info_url: null,
-      wiki_url: "",
+      info_url: randomBool()
+        ? "https://en.wikipedia.org/wiki/Cape_Canaveral_Air_Force_Station_Launch_Complex_26"
+        : null,
+      wiki_url: randomBool()
+        ? "https://en.wikipedia.org/wiki/Cape_Canaveral_Air_Force_Station_Launch_Complex_26"
+        : null,
       map_url: "https://www.google.com/maps/place/45Â°55'12.0\"N+63Â°20'31.2\"E",
       latitude: "45.92",
       longitude: "63.342",
@@ -94,9 +98,9 @@ const generateMockData = (u: string): { data: LaunchesResponseI } => {
   }));
 
   if (num > 100) {
-    return { data: { count: 1000, next: null, previous: url, results: [] } };
+    return { data: { count: 500, next: null, previous: url, results: [] } };
   } else {
-    return { data: { count: 1000, next: "url" + (num + 1), previous: url, results } };
+    return { data: { count: 500, next: "url" + (num + 1), previous: url, results } };
   }
 };
 
@@ -104,6 +108,6 @@ export function mockData(url: string): Promise<{ data: LaunchesResponseI }> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(generateMockData(url));
-    }, 3000);
+    }, 1000);
   });
 }

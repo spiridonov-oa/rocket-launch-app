@@ -14,7 +14,6 @@ export const retrieveData = async (name: string) => {
     const value = await AsyncStorage.getItem(name);
     if (value !== null) {
       // Our data is fetched successfully
-      // console.log(value);
       return JSON.parse(value);
     }
   } catch (error) {
