@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: colorScheme.placeholderText,
+    textAlign: "center",
     marginBottom: 17,
   },
 });

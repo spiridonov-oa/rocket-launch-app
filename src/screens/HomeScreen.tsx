@@ -5,6 +5,7 @@ import { useLaunchHook } from "../hooks/useLaunchHook";
 import { colorScheme } from "../theme/colors";
 import { SearchBar } from "react-native-elements";
 import { debounce } from "../helpers/debounce";
+import EmptyList from "../components/EmptyList/EmptyList";
 
 const HomeScreen = () => {
   const { results, response, loading, error, fetchLaunches, searchLaunches }: any = useLaunchHook();
@@ -46,7 +47,20 @@ const HomeScreen = () => {
           <Text style={{ color: colorScheme.error }}>{error?.message}</Text>
         </View>
       ) : (
-        <LaunchList data={results} onEndReached={loadMoreData} loading={loading} />
+        <LaunchList
+          data={results}
+          onEndReached={loadMoreData}
+          loading={loading}
+          ListEmptyComponent={() => (
+            <EmptyList
+              text={
+                search
+                  ? `Can not find any launch which name includes "${search}""`
+                  : "The list of rocket launches is empty"
+              }
+            />
+          )}
+        />
       )}
     </View>
   );
