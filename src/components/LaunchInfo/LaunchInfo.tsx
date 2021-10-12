@@ -30,29 +30,29 @@ const LaunchInfo = ({ data, isFavorite, onPressInfo, onPressFavorites }: LaunchI
         )}
 
         <View style={styles.column}>
-          <View style={styles.bottomRow}>
-            {data.wiki_url ? (
-              <Text style={styles.title}>
-                {data.name} - {data.country_code}
-                <Ionicons name={"information-circle-outline"} size={14} color={colorScheme.fontPrimary} />
-              </Text>
-            ) : (
-              <Text style={styles.title}>
-                {data.name} - {data.country_code}
-              </Text>
-            )}
-            <TouchableOpacity onPress={handleAddToFavorites}>
-              <Ionicons name={isFavorite ? "bookmarks" : "bookmarks-outline"} size={20} color={colorScheme.primary} />
-            </TouchableOpacity>
+          <View style={styles.firstRow}>
+            <Text style={styles.title}>
+              {data.name} - {data.country_code}
+            </Text>
           </View>
           <View style={styles.bottomRow}>
+            <Text style={styles.date}>{data.startDate}</Text>
             <Text
               style={[styles.status, { color: data.status === "Success" ? colorScheme.success : colorScheme.error }]}
             >
               {Status[data.status]}
             </Text>
-            <Text style={styles.date}>{data.startDate}</Text>
           </View>
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          <View style={styles.infoIcon}>
+            {!!data.wiki_url && (
+              <Ionicons name={"information-circle-outline"} size={20} color={colorScheme.fontPrimary} />
+            )}
+          </View>
+          <TouchableOpacity style={styles.favorites} onPress={handleAddToFavorites}>
+            <Ionicons name={isFavorite ? "bookmarks" : "bookmarks-outline"} size={20} color={colorScheme.primary} />
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -83,12 +83,25 @@ const styles = StyleSheet.create({
     color: colorScheme.fontPrimary,
     fontWeight: "bold",
   },
-  status: { fontSize: 12 },
-  date: { fontSize: 10, marginTop: 4 },
+  status: { fontSize: 12, marginTop: 4, marginRight: 4 },
+  date: { fontSize: 12, marginTop: 4, marginRight: 10 },
+  infoIcon: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  favorites: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   column: {
     flex: 1,
     flexDirection: "column",
     margin: 5,
   },
-  bottomRow: { flexDirection: "row", justifyContent: "space-between" },
+  firstRow: { flexDirection: "row", justifyContent: "space-between" },
+  bottomRow: { flexDirection: "row", justifyContent: "flex-start" },
 });

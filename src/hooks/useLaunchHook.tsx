@@ -1,20 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { formatDate } from "../helpers/date";
+import { serializeData } from "../helpers/serialize";
 import { fetchRocketLaunches } from "../services/rocketService";
-import { LaunchesResponseI, LaunchInfoI, LaunchItemI } from "../types/launch.types";
+import { LaunchesResponseI, LaunchItemI } from "../types/launch.types";
 
-let counter = 1;
 const baseUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json";
-
-const serializeData = (data: LaunchInfoI): LaunchItemI => ({
-  id: data?.id,
-  name: data?.name,
-  image: data?.image,
-  status: data?.status?.abbrev, // Failure | Success
-  wiki_url: data?.pad?.info_url || data?.pad?.wiki_url,
-  startDate: formatDate(data?.window_start),
-  country_code: data?.pad?.location?.country_code,
-});
+const searchUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json&search=";
 
 const avoidDuplicates = (arr: LaunchItemI[]): LaunchItemI[] => {
   const dataMap = arr.reduce((result: any, item) => {
@@ -42,12 +32,7 @@ function useProvideLaunch() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
 
-  const fetchLaunches = async (url: string) => {
-    console.log("fetchLaunches counter", counter++, url);
-    setLoading(true);
-    const [data, err] = await fetchRocketLaunches(url);
-    setLoading(false);
-
+  const handleResponse = ([data, err]: any) => {
     if (err) {
       setError(err);
     } else if (data) {
@@ -56,15 +41,32 @@ function useProvideLaunch() {
 
       if (results?.length) {
         const serializedData = results.map(serializeData);
-
         const clearList = avoidDuplicates([...list, ...serializedData]);
-
         console.log(clearList.map((i) => i.id));
         setList(clearList);
       }
     } else {
       setError(new Error("Can not get data from response"));
     }
+  };
+
+  const fetchLaunches = async (url: string) => {
+    setLoading(true);
+    const [data, err] = await fetchRocketLaunches(url);
+    setLoading(false);
+
+    handleResponse([data, err]);
+  };
+
+  const searchLaunches = async (query: string, url: string) => {
+    if (!url) {
+      setList([]);
+    }
+    setLoading(true);
+    const [data, err] = await fetchRocketLaunches(url || searchUrl + query);
+    setLoading(false);
+
+    handleResponse([data, err]);
   };
 
   useEffect(() => {
@@ -77,5 +79,6 @@ function useProvideLaunch() {
     loading,
     error,
     fetchLaunches,
+    searchLaunches,
   };
 }
