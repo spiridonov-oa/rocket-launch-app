@@ -117,7 +117,7 @@ function useProvideLaunch() {
     if (responseSearch?.results?.length) {
       const url = responseSearch?.url;
       const serializedData = responseSearch?.results.map(serializeData);
-      // console.log("responseSearch.url", url);
+      console.log("responseSearch.url", url);
       // console.log(getParams(url, "offset"), searchQuery, getParams(url, "search"));
       // console.log("searchRequestId", searchRequestId, responseSearch?.requestId);
 
@@ -135,6 +135,7 @@ function useProvideLaunch() {
 
   useEffect(() => {
     if (response?.results?.length) {
+      console.log("response.url", response?.url);
       const serializedData = response?.results.map(serializeData);
       if (getParams(response?.url, "offset")) {
         setList([...list, ...serializedData]);

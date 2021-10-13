@@ -5,9 +5,9 @@ export function serializeData(data: LaunchInfoI): LaunchItemI {
   return {
     id: data?.id,
     name: data?.name,
-    image: data?.image,
+    image: data?.image || data?.program[0]?.image_url,
     status: data?.status?.abbrev, // Failure | Success
-    wiki_url: data?.pad?.info_url || data?.pad?.wiki_url,
+    wiki_url: data?.pad?.info_url || data?.pad?.wiki_url || data?.program[0]?.wiki_url,
     startDate: formatDate(data?.window_start),
     country_code: data?.pad?.location?.country_code,
   };

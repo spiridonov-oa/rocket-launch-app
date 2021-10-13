@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { colorScheme } from "../../theme/colors";
 
 const EmptyList = ({ text = "This list is empty", loading = false }) => {

@@ -80,7 +80,28 @@ export interface LaunchInfoI {
   webcast_live: boolean;
   image: string | null;
   infographic: string | null;
-  program: [];
+  program: [
+    {
+      id: number;
+      url: string | null;
+      name: string | null;
+      description: string | null;
+      agencies: [
+        {
+          id: number;
+          url: string | null;
+          name: string | null;
+          type: string | null;
+        }
+      ];
+      image_url: string | null;
+      start_date: string | null;
+      end_date: string | null;
+      info_url: string | null;
+      wiki_url: string | null;
+      mission_patches: [];
+    }
+  ];
 }
 
 export interface LaunchItemI {
