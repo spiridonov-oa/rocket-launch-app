@@ -12,7 +12,7 @@ export const fetchRocketLaunches = async (
     }
 
     // console.log("---mock data", shouldLoadMockData);
-    console.log("load....... ", url);
+    // console.log("load....... ", url);
     let response;
     if (shouldLoadMockData) {
       response = await mockData(url);

@@ -11,15 +11,15 @@ const HomeScreen = () => {
   const {
     list,
     searchList,
-    response,
     loading,
     error,
     searchQuery,
-    fetchLaunches,
-    setSearchQuery,
     mockData,
-    toggleMockData,
+    loadNextPage,
+    setSearchQuery,
     initFetch,
+    initSearch,
+    toggleMockData,
   }: any = useLaunchHook();
 
   const getEmptyListTest = () => {
@@ -35,14 +35,16 @@ const HomeScreen = () => {
     }
   };
 
-  const loadMoreData = () => {
-    if (response?.next && !loading && !error && response.count > list.length) {
-      fetchLaunches(response.next);
-    }
+  const loadMore = () => {
+    loadNextPage();
   };
 
   const updateSearch = (text: string): void => {
     setSearchQuery(text);
+  };
+
+  const onRefresh = () => {
+    searchQuery ? initSearch(searchQuery) : initFetch();
   };
 
   return (
@@ -77,8 +79,10 @@ const HomeScreen = () => {
       ) : (
         <LaunchList
           data={searchQuery ? searchList : list}
-          onEndReached={loadMoreData}
+          onEndReached={loadMore}
           loading={loading}
+          refreshing={loading && (searchQuery ? !searchList.length : !list.length)}
+          onRefresh={onRefresh}
           ListEmptyComponent={() => <EmptyList text={getEmptyListTest()} loading={loading} />}
         />
       )}
