@@ -1,65 +1,85 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import React from "react";
+import { View, Text, Switch, Button } from "react-native";
 import LaunchList from "../components/LaunchList/LaunchList";
 import { useLaunchHook } from "../hooks/useLaunchHook";
 import { colorScheme } from "../theme/colors";
 import { SearchBar } from "react-native-elements";
-import { debounce } from "../helpers/debounce";
 import EmptyList from "../components/EmptyList/EmptyList";
+import ErrorView from "../components/ErrorView/ErrorView";
 
 const HomeScreen = () => {
-  const { results, response, loading, error, fetchLaunches, searchLaunches }: any = useLaunchHook();
-  const [search, setSearch] = useState("");
+  const {
+    list,
+    searchList,
+    response,
+    loading,
+    error,
+    searchQuery,
+    fetchLaunches,
+    setSearchQuery,
+    mockData,
+    toggleMockData,
+    initFetch,
+  }: any = useLaunchHook();
 
-  const loadMoreData = () => {
-    if (response?.next && !loading && !error && response.count > results.length && !search) {
-      fetchLaunches(response.next);
-    } else if (search && response?.next && !loading && !error && response.count > results.length) {
-      searchLaunches(null, response.next);
+  const getEmptyListTest = () => {
+    if (loading) {
+      return "Loading...";
+    } else if (searchQuery) {
+      if (searchQuery.length < 3) {
+        return `Type at least 3 symbols "${searchQuery}"`;
+      }
+      return `Can not find any launch which name includes "${searchQuery}"`;
+    } else {
+      return "The list of rocket launches is empty";
     }
   };
 
-  const searchDebounced = useCallback(debounce(searchLaunches, 500), []);
+  const loadMoreData = () => {
+    if (response?.next && !loading && !error && response.count > list.length) {
+      fetchLaunches(response.next);
+    }
+  };
 
   const updateSearch = (text: string): void => {
-    setSearch(text);
-    searchDebounced(text);
+    setSearchQuery(text);
   };
 
   return (
     <View style={{ flex: 1 }}>
       <View>
+        {mockData && (
+          <View style={{ flexDirection: "row", alignItems: "center", margin: 10 }}>
+            <Switch onValueChange={toggleMockData} value={mockData} />
+            <Text style={{ color: colorScheme.placeholderText, marginLeft: 10 }}>Mock data</Text>
+          </View>
+        )}
         <SearchBar
           placeholder="Search by name ..."
           // @ts-ignore
           onChangeText={updateSearch}
           containerStyle={{ backgroundColor: colorScheme.secondaryBackground }}
           inputContainerStyle={{ backgroundColor: colorScheme.background, borderRadius: 50, paddingHorizontal: 10 }}
-          value={search}
+          value={searchQuery}
           lightTheme={true}
           round={true}
           maxLength={100}
         />
       </View>
       {!!error ? (
-        <View style={{ alignItems: "center", margin: 20 }}>
-          <Text style={{ color: colorScheme.error }}>Some error occurred:</Text>
-          <Text style={{ color: colorScheme.error }}>{error?.message}</Text>
-        </View>
+        <ErrorView message={error.message}>
+          <View style={{ marginTop: 50, alignItems: "center" }}>
+            <Button onPress={initFetch} title="Try again" color={colorScheme.primary} />
+            <Text style={{ color: colorScheme.placeholderText, marginVertical: 20 }}>You can switch to mock data</Text>
+            <Switch onValueChange={toggleMockData} value={mockData} />
+          </View>
+        </ErrorView>
       ) : (
         <LaunchList
-          data={results}
+          data={searchQuery ? searchList : list}
           onEndReached={loadMoreData}
           loading={loading}
-          ListEmptyComponent={() => (
-            <EmptyList
-              text={
-                search
-                  ? `Can not find any launch which name includes "${search}""`
-                  : "The list of rocket launches is empty"
-              }
-            />
-          )}
+          ListEmptyComponent={() => <EmptyList text={getEmptyListTest()} loading={loading} />}
         />
       )}
     </View>

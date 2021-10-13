@@ -137,6 +137,6 @@ export function mockData(url: string): Promise<{ data: LaunchesResponseI }> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(generateMockData(url));
-    }, 1000);
+    }, 3000);
   });
 }

@@ -1,18 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { serializeData } from "../helpers/serialize";
+import { getParams, initDebounce, serializeData } from "../helpers/requests";
+import { baseUrl } from "../services/api";
 import { fetchRocketLaunches } from "../services/rocketService";
 import { LaunchesResponseI, LaunchItemI } from "../types/launch.types";
 
-const baseUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json";
-const searchUrl = "https://ll.thespacedevs.com/2.2.0/launch/?format=json&search=";
-
-const avoidDuplicates = (arr: LaunchItemI[]): LaunchItemI[] => {
-  const dataMap = arr.reduce((result: any, item) => {
-    result.push([item.id, item]);
-    return result;
-  }, []);
-  return Array.from(new Map<string, LaunchItemI>(dataMap).values());
-};
+const searchUrl = baseUrl + "&search=";
+const debounce = initDebounce();
 
 const LaunchContext = createContext(undefined);
 
@@ -28,68 +21,99 @@ export const useLaunchHook = () => useContext(LaunchContext);
 
 function useProvideLaunch() {
   const [list, setList] = useState<LaunchItemI[]>([]);
-  const [response, setResponse] = useState<Omit<LaunchesResponseI, "results">>();
+  const [searchList, setSearchList] = useState<LaunchItemI[]>([]);
+  const [response, setResponse] = useState<LaunchesResponseI & { url?: string }>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<Error | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mockData, setMockData] = useState<boolean>(true);
 
-  const handleResponse = ([data, err]: any) => {
+  const toggleMockData = (value: boolean) => {
+    setMockData(value);
+    clearLists();
+  };
+
+  const handleResponse = ([data, err]: any, url: string) => {
     if (err) {
       setError(err);
+      clearLists();
     } else if (data) {
       const { count, next, previous, results } = data;
-      setResponse({ count, next, previous });
-
-      if (results?.length) {
-        const serializedData = results.map(serializeData);
-        const clearList = avoidDuplicates([...list, ...serializedData]);
-        // console.log(clearList.map((i) => i.id));
-        setList(clearList);
-      }
+      setResponse({ count, next, previous, results, url });
     } else {
       setError(new Error("Can not get data from response"));
+      clearLists();
     }
   };
 
   const fetchLaunches = async (url: string) => {
+    !!error && setError(null);
     setLoading(true);
-    const [data, err] = await fetchRocketLaunches(url);
+    const [data, err] = await fetchRocketLaunches(url, mockData);
     setLoading(false);
 
-    handleResponse([data, err]);
+    handleResponse([data, err], url);
   };
 
-  const searchLaunches = async (query: string, url: string) => {
-    let nextPageUrl;
-    if (!url) {
-      if (!query) {
-        fetchLaunches(baseUrl);
-        return;
-      } else if (query.length < 3) {
-        return;
-      }
+  const initFetch = () => {
+    clearLists();
+    !!error && setError(null);
+    fetchLaunches(baseUrl);
+  };
 
-      nextPageUrl = searchUrl + query;
-      setList([]);
-    } else {
-      nextPageUrl = url;
-    }
-    setLoading(true);
-    const [data, err] = await fetchRocketLaunches(nextPageUrl);
-    setLoading(false);
-
-    handleResponse([data, err]);
+  const clearLists = () => {
+    setList([]);
+    setSearchList([]);
   };
 
   useEffect(() => {
-    fetchLaunches(baseUrl);
-  }, []);
+    if (response?.results?.length) {
+      const url = response?.url;
+      const serializedData = response?.results.map(serializeData);
+      // console.log("response.url", url);
+      // console.log(getParams(url, "offset"), searchQuery, getParams(url, "search"));
+
+      if (getParams(url, "search")) {
+        if (searchQuery === getParams(url, "search")) {
+          const filteredResult = serializedData.filter((item) => item.name?.includes(searchQuery));
+          if (getParams(url, "offset")) {
+            setSearchList([...searchList, ...filteredResult]);
+          } else {
+            setSearchList(filteredResult);
+          }
+        }
+      } else {
+        setList([...list, ...serializedData]);
+      }
+    }
+  }, [response]);
+
+  useEffect(() => {
+    setSearchList([]);
+    if (searchQuery && searchQuery.length > 2) {
+      debounce(() => {
+        fetchLaunches(searchUrl + searchQuery);
+      }, 500);
+    } else {
+      debounce(() => {});
+    }
+  }, [searchQuery, mockData]);
+
+  useEffect(() => {
+    initFetch();
+  }, [mockData]);
 
   return {
-    results: list,
+    list: list,
+    searchList: searchList,
     response,
     loading,
     error,
+    searchQuery,
+    mockData,
     fetchLaunches,
-    searchLaunches,
+    setSearchQuery,
+    initFetch,
+    toggleMockData,
   };
 }

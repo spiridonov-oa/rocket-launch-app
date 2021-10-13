@@ -6,11 +6,7 @@ import { colorScheme } from "../../theme/colors";
 const EmptyList = ({ text = "This list is empty", loading = false }) => {
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color={colorScheme.primary} />
-      ) : (
-        <Text style={styles.text}>{text}</Text>
-      )}
+      <Text style={styles.text}>{!loading ? text : " "}</Text>
       <Ionicons name="rocket-outline" size={100} color={colorScheme.placeholderText} style={{ marginTop: "10%" }} />
     </View>
   );
@@ -23,6 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    margin: 20,
     marginTop: "20%",
   },
   text: {
