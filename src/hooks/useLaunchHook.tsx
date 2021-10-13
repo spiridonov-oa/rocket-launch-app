@@ -31,7 +31,7 @@ function useProvideLaunch() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mockData, setMockData] = useState<boolean>(true);
+  const [mockData, setMockData] = useState<boolean>(false);
 
   const toggleMockData = (value: boolean) => {
     setMockData(value);
