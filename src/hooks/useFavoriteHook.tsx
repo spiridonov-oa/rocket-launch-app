@@ -4,8 +4,6 @@ import { LaunchInfoI } from "../types/launch.types";
 
 const FavoriteContext = createContext(undefined);
 
-// Provider component that wraps your app and makes Favorite object ...
-// ... available to any child component that calls useAuth().
 export function ProvideFavorite({ children }: any) {
   const provider: any = useProvideFavorite();
 

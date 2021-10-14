@@ -11,8 +11,6 @@ let requestId = 0;
 
 const LaunchContext = createContext(undefined);
 
-// Provider component that wraps your app and makes Launch object ...
-// ... available to any child component that calls useAuth().
 export function ProvideLaunch({ children }: any) {
   const provider: any = useProvideLaunch();
 
