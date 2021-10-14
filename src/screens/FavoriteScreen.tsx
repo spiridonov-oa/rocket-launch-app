@@ -10,7 +10,7 @@ const FavoriteScreen = () => {
   const favoritesArray: LaunchItemI[] = Array.from(favorites.values());
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <LaunchList data={favoritesArray} />
     </View>
   );
