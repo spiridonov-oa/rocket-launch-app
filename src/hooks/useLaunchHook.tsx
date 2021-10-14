@@ -38,12 +38,12 @@ function useProvideLaunch() {
     clearLists();
   };
 
-  const handleResponse = ([data, err]: any, url: string, requestId?: number) => {
+  const handleResponse = ([data, err]: any, url: string, reqId?: number) => {
     if (data) {
       if (getParams(url, "search")) {
-        setResponseSearch({ ...data, url, requestId });
+        setResponseSearch({ ...data, url, requestId: reqId });
       } else {
-        setResponse({ ...data, url, requestId });
+        setResponse({ ...data, url, requestId: reqId });
       }
     } else {
       setError(err || new Error("Can not get data from response"));
@@ -123,7 +123,8 @@ function useProvideLaunch() {
 
       if (getParams(url, "search")) {
         if (searchQuery === getParams(url, "search") && searchRequestId === responseSearch?.requestId) {
-          if (getParams(url, "offset")) {
+          const offset = getParams(responseSearch?.url, "offset") || "";
+          if (+offset > 0) {
             setSearchList([...searchList, ...serializedData]);
           } else {
             setSearchList(serializedData);
@@ -137,7 +138,8 @@ function useProvideLaunch() {
     if (response?.results?.length) {
       console.log("response.url", response?.url);
       const serializedData = response?.results.map(serializeData);
-      if (getParams(response?.url, "offset")) {
+      const offset = getParams(response?.url, "offset") || "";
+      if (+offset > 0) {
         setList([...list, ...serializedData]);
       } else {
         setList(serializedData);
